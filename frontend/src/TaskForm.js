@@ -1,15 +1,18 @@
 import React from 'react'
 
-function TaskForm() {
+function TaskForm(props) {
     const [taskName,setTaskName] = React.useState("")
 
     function hundelChange(event){
         setTaskName(event.target.value)
-        console.log(taskName)
+    }
+    function hundelSubmit(event){
+        event.preventDefault()
+        props.onadd(taskName)
     }
   return (
     <div>
-        <form action="">
+        <form onSubmit={hundelSubmit}>
         <button>+</button>
         <input
             type="text"
