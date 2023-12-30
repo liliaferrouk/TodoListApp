@@ -11,6 +11,7 @@ function Checkbox(props) {
         },
         body: JSON.stringify({note:props.note,done:true})
       })
+      props.setNbrTasksDone(prev=> prev+1)
     }
     function decheck(){
       setChecked(false)
@@ -21,6 +22,7 @@ function Checkbox(props) {
         },
         body: JSON.stringify({note:props.note,done:false})
       })
+      props.setNbrTasksDone(prev=> prev-1)
     }
   return (
     <div >

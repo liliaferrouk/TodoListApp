@@ -82,6 +82,7 @@ button.trash{
   border:none;
   display:flex;
   cursor:pointer;
+  margin-left: auto;
 }
 button.trash svg{
   fill: #888;
