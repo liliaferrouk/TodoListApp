@@ -7,7 +7,7 @@ function TaskForm(props) {
         setTaskName(event.target.value)
     }
     function hundelSubmit(event){
-        event.preventDefault()
+        //event.preventDefault()
         props.onadd(taskName)
     }
   return (

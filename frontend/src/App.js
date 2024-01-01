@@ -15,7 +15,6 @@ function App() {
       setNbrTasksDone(data.filter(t=> t.done).length)
     })
   },[])
-  //je doit trouver une solution s that the page will be rundered a chaque fois qu'un changement arrive
 
   React.useEffect(()=>{
     console.log("rendered !")
@@ -35,6 +34,7 @@ function App() {
   }
 
   function getmessage(){
+    if(tasks.length ===0) return ""
     const per = nbrTasksDone / tasks.length *100
     if (per===0) {
       return("Try doing at least one 🥹")
@@ -47,7 +47,8 @@ function App() {
 
   function deletetask(id){
     console.log(tasks)
-    const taskdel = tasks.filter(task => task.id === id);
+    console.log(id)
+    const taskdel = tasks.find(task => task.id === id);
     console.log(taskdel.id)
     console.log(taskdel.note)
     console.log(taskdel.done? "true" : "false")
@@ -66,13 +67,46 @@ function App() {
     console.log("completer:"+nbrTasksDone)
   }
 
+  function check(id){
+    const taskToToggle = tasks.find(task => task.id === id);
+    fetch(`http://127.0.0.1:8000/api/tasks/${id}`,{
+      method: "PUT",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({note:taskToToggle.note,done:true})
+    })
+    const updatedTasks = tasks.map(task =>
+      task.id === id ? { ...task, done: !task.done } : task
+    );
+    setTasks(updatedTasks);
+    setNbrTasksDone(prev=> prev+1)
+  }
+
+  function decheck(id){
+    const taskToToggle = tasks.find(task => task.id === id);
+    fetch(`http://127.0.0.1:8000/api/tasks/${id}`,{
+      method: "PUT",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({note:taskToToggle.note,done:false})
+    })
+    const updatedTasks = tasks.map(task =>
+      task.id === id ? { ...task, done: !task.done } : task
+    );
+    setTasks(updatedTasks);
+    setNbrTasksDone(prev=> prev-1)
+  }
+
   return (
     <main>
-      <h1>{nbrTasksDone}/{tasks.length} Complete</h1>
-      <h2>{getmessage()}</h2>
+      <h1>My ToDo Liste App</h1>
+      {tasks.length !==0 && (<h2>{nbrTasksDone}/{tasks.length} Complete</h2>)}
+      <h3>{getmessage()}</h3>
       <TaskForm onadd={addTask} />
       {tasks.map((task,index)=>(
-        <Task key={index} id={task.id} note={task.note} done={task.done} setNbrTasksDone={setNbrTasksDone} deletetask={deletetask}/>
+        <Task key={index} id={task.id} note={task.note} done={task.done} check={check} decheck={decheck} setNbrTasksDone={setNbrTasksDone} deletetask={deletetask}/>
       ))}
     </main>
   );
